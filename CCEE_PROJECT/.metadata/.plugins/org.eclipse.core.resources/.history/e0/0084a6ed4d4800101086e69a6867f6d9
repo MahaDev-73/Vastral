@@ -1,0 +1,56 @@
+package com.sunbeam.models;
+
+enum AppStatus{
+	success, error
+}
+public class CustomerResponse<T> {
+	private AppStatus status;
+	private T data;
+	private String message;
+	
+	public CustomerResponse(AppStatus status, T data, String message) {
+		this.status=status;
+		this.data=data;
+		this.message=message;
+		
+	}
+
+	public AppStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AppStatus status) {
+		this.status = status;
+	}
+
+	public T getData() {
+		return data;
+	}
+
+	public void setData(T data) {
+		this.data = data;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public static <T> CustomerResponse<T> success(T data) {
+		CustomerResponse<T> res = new CustomerResponse<T>(AppStatus.success, data, null);
+		return res;
+	}
+	public static <T> CustomerResponse<T> success(T data, String message) {
+		CustomerResponse<T> res = new CustomerResponse<T>(AppStatus.success, data, message);
+		return res;
+	}
+	public static <T> CustomerResponse<T> error(String message) {
+		CustomerResponse<T> res = new CustomerResponse<T>(AppStatus.error, null, message);
+		return res;
+	}
+	
+	
+
+}

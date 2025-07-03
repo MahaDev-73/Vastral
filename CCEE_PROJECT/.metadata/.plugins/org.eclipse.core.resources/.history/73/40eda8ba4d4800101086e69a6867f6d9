@@ -1,0 +1,17 @@
+package com.sunbeam.models;
+
+enum AppStatus{
+	success, error
+}
+public class CustomerResponse<T> {
+	private AppStatus status;
+	private T data;
+	private String message;
+	
+	public CustomerResponse(AppStatus status, T data, String message) {
+		this.status=s
+	}
+	
+	
+
+}

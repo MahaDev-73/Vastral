@@ -1,0 +1,93 @@
+package com.sunbeam.services;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.sunbeam.entities.Customer;
+
+import com.sunbeam.models.Credentials;
+import com.sunbeam.models.CustomerResponse;
+import com.sunbeam.repository.CustomerRepo;
+
+@Service
+public class CustomerImpl implements CustomerService, UserDetailsService {
+	private CustomerRepo customerDao;
+	@Autowired
+	public CustomerImpl(CustomerRepo userDao){ 
+		System.out.println(userDao);
+		this.customerDao = userDao;
+	}
+
+	@Override
+	public Customer getCustomerByEmail(String email) {
+		Customer dbCust = customerDao.findByEmail(email);
+		return dbCust;
+	}
+	
+	@Override
+	public Customer getCustomerByCredentials(Credentials cr){
+		Customer dbCust = customerDao.findByEmail(cr.getEmail());
+		if(dbCust != null && dbCust.getPassword().equals(cr.getPassword()))
+			return dbCust;
+		return null;
+	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Customer dbUser = customerDao.findByEmail(email);
+		if(dbUser == null)
+			throw new UsernameNotFoundException("No user exists!"); 
+		return dbUser;
+	}
+//	
+//	@Override
+//	public Customer findByEmail(String email) {
+//	    return customerDao.findByEmail(email); // or custom query
+//	}
+//	@Override
+//	public Customer findById(int id) {
+//	    return customerDao.findById(id).orElse(null);
+//	}
+//
+//	@Override
+//	public void deleteById(int id) {
+//		customerDao.deleteById(id);
+//	}
+
+	@Override
+	public Customer findById(int id) {
+		Optional<Customer> result = customerDao.findById(id);
+		return result.orElse(null);
+	}
+
+	@Override
+	public CustomerResponse<String> authenticate(Credentials customer) {
+		Optional<Customer> cust = customerDao.findByEmailAndPassword(customer.getEmail(), customer.getPassword());
+		CustomerResponse<String> resp = new CustomerResponse();
+		if(cust.isPresent()) {
+			return resp.success("Successfully Authenticate");
+		}
+		return false;
+	}
+
+	@Override
+	public void deleteById(int id) {
+		customerDao.deleteById(id);
+		
+	}
+
+	@Override
+	public List<Customer> findAll() {
+		return customerDao.findAll();
+	}
+	
+
+	
+
+}

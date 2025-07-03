@@ -1,0 +1,10 @@
+package com.sunbeam.models;
+
+enum AppStatus{
+	success, error
+}
+public class CustomerResponse {
+	private AppStatus status;
+	
+
+}

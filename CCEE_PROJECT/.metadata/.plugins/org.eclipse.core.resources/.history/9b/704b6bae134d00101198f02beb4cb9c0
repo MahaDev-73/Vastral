@@ -1,0 +1,15 @@
+package com.sunbeam.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.sunbeam.entities.Customer;
+
+
+public interface CustomerRepo extends JpaRepository<Customer, Integer> {
+	Customer findByEmail(String email);
+	
+     @Query("select email, password from customers where email=:email AND password=:password")
+	Customer findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+}

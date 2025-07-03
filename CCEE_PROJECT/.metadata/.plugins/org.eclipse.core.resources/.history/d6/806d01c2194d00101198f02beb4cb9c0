@@ -1,0 +1,11 @@
+package com.sunbeam.entities;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class LoginRequest {
+
+	private String email;
+	private String password;
+
+}

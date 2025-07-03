@@ -1,0 +1,18 @@
+package com.sunbeam.restcontroller;
+
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.sunbeam.models.CustomerResponse;
+
+@RestControllerAdvice
+public class ExceptionHandler {
+	
+	//@ExceptionHandler(Exception.class);
+	@org.springframework.web.bind.annotation.ExceptionHandler
+	public CustomerResponse<?> handleException(Throwable ex) {
+		ex.printStackTrace();
+		String message = ex.getClass().getName() + ": " + ex.getMessage();
+		return CustomerResponse.error(message);
+	}
+}
