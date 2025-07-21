@@ -1,0 +1,41 @@
+package com.sunbeam.service;
+
+import java.util.List;
+
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+import com.sunbeam.model.Customer;
+import com.sunbeam.response.Credentials;
+import com.sunbeam.response.CustomerResponse;
+
+
+
+public interface CustomerService {
+	
+    CustomerResponse<String> authenticate(Credentials customer);
+    CustomerResponse save(Customer customer);
+    
+    
+    void deleteById(int id);
+    List<Customer> findAll();
+
+
+//	Customer findByEmail(String email);
+//	
+//	Customer findById(int id);
+//	void deleteById(int id);
+}
+
+//package com.sunbeam.services;
+//
+//import java.util.List;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import com.sunbeam.entities.Customer;
+//
+//public interface CustomerService extends UserDetailsService {
+//    Customer findByEmail(String email);
+//    Customer findById(int id);
+//    Customer save(Customer customer);
+//    void deleteById(int id);
+//    List<Customer> findAll();
+//}
