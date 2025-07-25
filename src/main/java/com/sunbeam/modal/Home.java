@@ -1,4 +1,4 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class Home {
+
 	private List<HomeCategory> grid;
 	
 	private List<HomeCategory> shopByCategories;
@@ -15,4 +16,5 @@ public class Home {
 	private List<HomeCategory> dealCategories;
 	
 	private List<Deal> deals;
+	
 }

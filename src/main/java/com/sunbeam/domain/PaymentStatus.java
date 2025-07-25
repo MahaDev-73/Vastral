@@ -1,8 +1,10 @@
 package com.sunbeam.domain;
 
 public enum PaymentStatus {
-	PENDING,
+
+	PENDING, 
 	PROCESSING,
 	COMPLETED,
 	FAILED
+	
 }

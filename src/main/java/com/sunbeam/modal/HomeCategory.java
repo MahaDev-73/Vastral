@@ -1,4 +1,4 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
 import com.sunbeam.domain.HomeCategorySection;
 
@@ -19,14 +19,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class HomeCategory {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	private String name;
+	
 	private String image;
-	private String categoryId;
+	
+	private String category;
+	
 	private HomeCategorySection section;
+	
 	
 }

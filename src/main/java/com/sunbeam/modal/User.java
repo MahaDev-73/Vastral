@@ -1,4 +1,4 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Entity
 @Getter
 @Setter
@@ -28,11 +27,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class User {
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
@@ -44,13 +42,14 @@ public class User {
 	
 	private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
 	
-	
 	@OneToMany
 	private Set<Address> addresses = new HashSet<>();
 	
 	@ManyToMany
 	@JsonIgnore
 	private Set<Coupon> usedCoupons = new HashSet<>();
-	
-	
 }
+
+
+
+

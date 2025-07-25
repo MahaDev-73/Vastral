@@ -1,8 +1,10 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
@@ -10,7 +12,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -37,31 +39,37 @@ public class Product {
 	
 	private int sellingPrice;
 	
-	private int discountpercent;
+	private int discountPercentage;
 	
-	private int quatity;
+	private int quantity;
 	
 	private String color;
 	
-	@ElementCollection
-	private List<String> image = new ArrayList<>();
+	@ElementCollection  //Create Seperate table for images(well Structured)
+	private List<String> images = new ArrayList<>();
 	
 	private int numRatings;
 	
 	@ManyToOne
 	private Category category;
 	
-	
 	@ManyToOne
 	private Seller seller;
 	
 	private LocalDateTime createdAt;
 	
-	private String Sizes;
+	private String sizes;
 	
-	@OneToMany(mappedBy = "product", cascade= CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Review> reviews = new ArrayList<>();
 	
-	
-	
 }
+
+
+
+
+
+
+
+
+

@@ -1,17 +1,13 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -25,32 +21,27 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Review {
+public class CartItem {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(nullable = false)
-	private String reviewText;
-	
-	@Column(nullable= false)
-	private double rating;
-	
-	@ElementCollection
-	private List<String> productImages;
-	
-	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "product_id")
+	@JsonIgnore
+	private Cart cart;
+	
+	@ManyToOne
 	private Product product;
 	
+	private String size;
 	
-	@ManyToOne
-	private User user;
+	private int quantity = 1;
 	
-	@Column(nullable = false)
-	private LocalDateTime createAt = LocalDateTime.now();
-		
+	private Integer mrpPrice;
 	
+	private Integer sellingPrice;
+	
+	private Long userId;
 	
 }

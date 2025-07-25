@@ -1,9 +1,14 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,30 +22,26 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class SellerReport {
-	
+public class Cart {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	@OneToOne
-	private Seller seller;
-	
-	private Long totalEarnings = 0L;
-	
-	private Long totalSales = 0L;
-	
-	private Long totalRefunds=0L;
-	
-	private Long totalTax = 0L;
-	
-	private Long netEarnings = 0L;
-	
-	private Integer totalOrders = 0;
-	
-	private Integer cancelOrders = 0;
-	
-	private Integer totalTransactions =0;
+	private User user;
 	
 	
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<CartItem> cartItems = new HashSet<>();
+	
+	private double totalSellingPrice;
+	
+	private int totalItem;
+	
+	private int totalMrpPrice;
+	
+	private int discount;
+	
+	private String couponCode;
 }

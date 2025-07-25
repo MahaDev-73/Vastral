@@ -1,9 +1,14 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,24 +21,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Address {
-	
+public class Wishlist {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String name;
+	@OneToOne
+	private User user;
 	
-	private String locality;
-	
-	private String address;
-	
-	private String city;
-	
-	private String state;
-	
-	private String pinCode;
-	
-	private String mobile;
-	
+	@ManyToMany
+	private Set<Product> products = new HashSet<>();
 }

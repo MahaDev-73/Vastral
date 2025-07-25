@@ -1,13 +1,9 @@
-package com.sunbeam.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.sunbeam.modal;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,31 +16,23 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class CartItem {
-
+public class Address {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@ManyToOne
-	@JsonIgnore
-	private Cart cart;
+	private String name;
 	
-	@ManyToOne
-	@JoinColumn(name = "product_id")
-	private Product product;
+	private String locality;
 	
-	private String size;
+	private String address;
 	
-	private int quantity = 1;
+	private String city;
 	
-	private Integer mrpPrice;
+	private String state;
 	
-	private Integer sellingPrice;
+	private String pinCode;
 	
-	private Long userId;
-	
-	
-	
-	
+	private String mobile;
 }

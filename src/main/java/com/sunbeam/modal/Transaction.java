@@ -1,12 +1,14 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,27 +21,21 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class OrderItem {
-	
+public class Transaction {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@JsonIgnore
 	@ManyToOne
+	private User customer;
+	
+	@OneToOne
 	private Order order;
 	
 	@ManyToOne
-	private Product product;
+	private Seller seller;
 	
-	private String size;
-	
-	private int quantity;
-	
-	private Integer mrpPrice;
-	
-	private Integer sellingPrice;
-	
-	private Long userId;
+	private LocalDateTime date = LocalDateTime.now();
 	
 }

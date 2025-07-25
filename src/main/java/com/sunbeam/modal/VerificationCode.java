@@ -1,13 +1,12 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
+import java.time.LocalDateTime;
 
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,26 +19,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Category {
+public class VerificationCode {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String name;
+	private String otp;
 	
-	//@jakarta.validation.constraints.NotNull
+	private String email;
 	
-	private Integer level;
+	@OneToOne
+	private User user;
 	
-	//@jakarta.validation.constraints.NotNull
-	@Column(unique=true)
-	private String CategoryId;
-	
-	@ManyToOne
-	private Category parentCategory;
-	
-	
-	
-	
-	
+	@OneToOne
+	private Seller seller;
+
 }

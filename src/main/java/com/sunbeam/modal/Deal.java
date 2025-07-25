@@ -1,13 +1,11 @@
-package com.sunbeam.model;
+package com.sunbeam.modal;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.sunbeam.domain.HomeCategorySection;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -21,17 +19,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Wishlist {
-	
+public class Deal {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	private Integer discount;
+	
 	@OneToOne
-	private User user;
-	
-	@ManyToMany
-	private Set<Product> products = new HashSet<>();
-	
+	private HomeCategory category;
 }
-
