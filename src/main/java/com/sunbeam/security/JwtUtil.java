@@ -11,10 +11,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-import com.sunbeam.model.Customer;
+import com.sunbeam.entities.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -40,7 +40,7 @@ public class JwtUtil {
 	}
 	
 	public String createToken(Authentication auth) {
-		Customer user = (Customer)auth.getPrincipal();
+		User user = (User)auth.getPrincipal();
 		String subject = "" + user.getId(); //user.getUsername();	// user email
 		String roles = user.getAuthorities().stream()	// user role e.g. ROLE_USER or ROLE_ADMIN
 				.map(authority -> authority.getAuthority())
