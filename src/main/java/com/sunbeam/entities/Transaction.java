@@ -30,7 +30,7 @@ public class Transaction {
 	private User customer;
 	
 	@OneToOne
-	private Order order;
+	private Orders order;
 	
 	@ManyToOne
 	private Seller seller;

@@ -1,5 +1,5 @@
 
-package com.sunbeam.services;
+package com.sunbeam.services.impl;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import com.sunbeam.daos.UserRepository;
 import com.sunbeam.entities.Credentials;
 import com.sunbeam.entities.User;
 import com.sunbeam.response.UserResponse;
+import com.sunbeam.services.UserService;
 
 @Service
 public class UserServiceImpl implements UserService{
