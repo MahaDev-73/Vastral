@@ -1,14 +1,20 @@
 package com.sunbeam.services;
 
-
-
-import org.springframework.stereotype.Service;
-
 import com.sunbeam.entities.Cart;
 import com.sunbeam.entities.CartItem;
+import com.sunbeam.entities.Product;
+import com.sunbeam.entities.User;
 
 public interface CartService {
-    Cart getCartByUserId(int userId);
-    Cart addToCart(int userId, CartItem item);
-    void removeFromCart(int userId, int productId);
+
+	public CartItem addCartItem(	
+			User user,
+			Product product,
+			String size,
+			int quantity
+		);
+	
+	public Cart findUserCart(User user);
+	
+	
 }

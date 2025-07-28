@@ -1,4 +1,4 @@
-package com.sunbeam.services.Impl;
+package com.sunbeam.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,9 +46,55 @@ public class AuthServiceImpl implements AuthService {
 	private final CartRepository cartRepository;
 	private final JwtProvider jwtProvider;
 	private final VerificationCodeRepository verificationCodeRepository;
-//	private final EmailService emailService;
-	private final CustomUserServiceImpl customUserService;
-//	private final SellerRepository sellerRepository;
+	private final EmailService emailService;
+	private final CustomerUserServiceImpl customUserService;
+	private final SellerRepository sellerRepository;
+
+	
+
+	@Override
+	public void sentLoginOtp(String email, UserRole role) throws Exception {
+		String SIGNING_PREFIX = "signin_";
+
+		if (email.startsWith(SIGNING_PREFIX)) {
+			
+			email = email.substring(SIGNING_PREFIX.length());
+
+			if (role.equals(UserRole.ROLE_SELLER)) {
+				Seller seller = sellerRepository.findByEmail(email);
+				if (seller == null) {
+					throw new Exception("Seller not found...");
+				}
+			} else {
+				System.out.println("Email "+ email);
+				User user = userRepository.findByEmail(email);
+				if (user == null) {
+					throw new Exception("User not exists with following email...");
+				}
+			}
+
+		}
+
+		VerificationCode isExists = verificationCodeRepository.findByEmail(email);
+
+		if (isExists != null) { // verification code is exists
+			verificationCodeRepository.delete(isExists);
+		}
+
+		String otp = OtpUtil.generateOtp();
+
+		VerificationCode verificationCode = new VerificationCode();
+		verificationCode.setOtp(otp);
+		verificationCode.setEmail(email);
+
+		verificationCodeRepository.save(verificationCode); // save otp into database
+
+		String subject = "Vastral : Login/Signup OTP";
+		String text = "Your Login/Signup OTP is - " + otp;
+
+		emailService.sendVerificationOtpEmail(email, otp, subject, text);
+
+	}
 
 
 
