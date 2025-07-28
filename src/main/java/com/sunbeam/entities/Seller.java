@@ -1,8 +1,11 @@
 package com.sunbeam.entities;
 
 import com.sunbeam.models.AccountStatus;
+
 import com.sunbeam.models.UserRole;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +18,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Entity
 @Getter
 @Setter
@@ -23,28 +25,44 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Seller {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	private String sellerName;
 	
+	private String mobile;
+	
+	@Column(unique = true, nullable = false)
+	private String email;
+	
 	private String password;
 	
 	@Embedded
-	private BusinessDetails businessDetails = new BusinessDetails();
+	private BusinessDetails businessdetails = new BusinessDetails();
 	
 	@Embedded
 	private BankDetails bankDetails = new BankDetails();
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	private Address pickupAddress = new Address();
-	
-	private UserRole role;
 	
 	private String GSTIN;
 	
+	private UserRole role;
+	
+	private boolean isEmailVerified = false;
+	
 	private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
 	
-	
 }
+
+
+
+
+
+
+
+
+
