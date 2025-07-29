@@ -76,12 +76,12 @@ public class PaymentServiceImpl implements PaymentService {
         }
         return false;
     }
-
-    // @Override
-    // public PaymentLink createRazorpayPaymentLink(User user, Long Amount, Long orderId) throws RazorpayException {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'createRazorpayPaymentLink'");
-    // }
+//
+//     @Override
+//     public PaymentLink createRazorpayPaymentLink(User user, Long Amount, Long orderId) throws RazorpayException {
+//         // TODO Auto-generated method stub
+//         throw new UnsupportedOperationException("Unimplemented method 'createRazorpayPaymentLink'");
+//     }
 
     // @Override
     // public String createStripePaymentLink(User user, Long Amount, Long orderId) throws StripeException {

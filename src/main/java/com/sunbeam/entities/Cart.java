@@ -42,6 +42,11 @@ public class Cart {
 	private int discount;
 	
 	private String couponCode;
+
+	public int getCouponPrice() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 	

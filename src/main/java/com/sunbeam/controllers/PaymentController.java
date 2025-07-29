@@ -86,7 +86,7 @@ public class PaymentController {
                 SellerReport report=sellerReportService.getSellerReport(seller);
                 report.setTotalOrders(report.getTotalOrders()+1);
                 report.setTotalEarnings(report.getTotalEarnings()+order.getTotalSellingPrice());
-                report.setTotalSales(report.getTotalSales()+order.getOrderItems().size());
+                report.setTotalSales(report.getTotalSales()+order.getOrderitems().size());
                 sellerReportService.updateSellerReport(report);
             }
             Cart cart=cartRepository.findByUserId(user.getId());
