@@ -73,4 +73,12 @@ public class UserServiceImpl implements UserService{
 
 
 
+	@Override
+	public User findUserProfileByJwt(String jwt) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 }

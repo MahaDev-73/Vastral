@@ -1,8 +1,6 @@
 package com.sunbeam.response;
 
-enum AppStatus{
-	success, error
-}
+
 public class UserResponse<T> {
 	private AppStatus status;
 	private T data;

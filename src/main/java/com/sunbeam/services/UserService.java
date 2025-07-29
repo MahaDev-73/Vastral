@@ -15,5 +15,7 @@ public interface UserService  extends UserDetailsService{
 	
 	User loadUserByUsername(String email);
 
+	User findUserProfileByJwt(String jwt);
+
 }
 
