@@ -108,10 +108,6 @@ A common workflow for testing the API (e.g., with Postman) is as follows:
 3.  **Store the JWT** and include it in the `Authorization` header for all protected API calls (e.g., `Authorization: Bearer <your_jwt>`).
 4.  Proceed to test role-specific functionalities like adding items to a cart (customer) or creating a product (seller).
 
-## Contributing 🤝
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-Please fork the repository and submit a pull request with your changes. Ensure you follow the project's coding standards and include appropriate tests.
 
 ## Contact 📧
 Prince Charming - [princecharming8869@gmail.com](mailto:princecharming8869@gmail.com)
