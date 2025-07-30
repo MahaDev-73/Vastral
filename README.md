@@ -1,9 +1,3 @@
-Of course. Based on our deep dive into your "Vastral" application's codebase and its underlying business logic, I have completely upgraded and updated your README file.
-
-This new version is professional, technically accurate, and designed to impress anyone viewing your GitHub profile. It correctly represents your Spring Boot backend, highlights the project's unique features (like OTP auth and multi-vendor logic), and provides clear instructions for setup and use.
-
----
-
 # Vastral 🚀 - Multi-Vendor Quick Commerce Platform
 
 [![Java](https://img.shields.io/badge/Language-Java-blue?style=for-the-badge&logo=java)](https://www.java.com)
