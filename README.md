@@ -86,7 +86,7 @@ The entire REST API is professionally documented and can be explored interactive
     ```    The backend server will start on `http://localhost:5454`.
 
 ### Frontend Setup
-1.  **Navigate to the Frontend Directory** (Assuming it's within the project)
+1.  **Navigate to the Frontend Directory**
     ```bash
     cd ../vastral-frontend # Example directory name
     ```
