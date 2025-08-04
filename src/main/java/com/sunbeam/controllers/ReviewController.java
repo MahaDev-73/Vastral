@@ -18,6 +18,7 @@ import com.sunbeam.entities.Review;
 import com.sunbeam.entities.User;
 import com.sunbeam.request.CreateReviewRequest;
 import com.sunbeam.response.ApiResponse;
+import com.sunbeam.services.ProductService;
 import com.sunbeam.services.ReviewService;
 import com.sunbeam.services.UserService;
 import com.sunbeam.services.UserService1;
@@ -31,7 +32,7 @@ public class ReviewController {
 
 	private final ReviewService reviewService;
 	private final UserService1 userService;
-//	private final ProductService productService;
+	private final ProductService productService;
 	
 	
 	@GetMapping("/products/{productId}/reviews")
@@ -42,18 +43,18 @@ public class ReviewController {
 	}
 	
 	
-//	@PostMapping("/products/{productId}/reviews")
-//	public ResponseEntity<Review> writeReview(
-//			@RequestBody CreateReviewRequest req,
-//			@PathVariable Long productId,
-//			@RequestHeader("Authorization") String jwt) throws Exception{
-//		
-//		User user = userService.findUserProfileByJwt(jwt); 		
-//		Product product = productService.findProductById(productId);
-//
-//		Review review = reviewService.createReview(req, user, product);
-//		return ResponseEntity.ok(review);	
-//	}
+	@PostMapping("/products/{productId}/reviews")
+	public ResponseEntity<Review> writeReview(
+			@RequestBody CreateReviewRequest req,
+			@PathVariable Long productId,
+			@RequestHeader("Authorization") String jwt) throws Exception{
+		
+		User user = userService.findUserProfileByJwt(jwt); 		
+		Product product = productService.findProductById(productId);
+
+		Review review = reviewService.createReview(req, user, product);
+		return ResponseEntity.ok(review);	
+	}
 	
 	
 	@PatchMapping("/reviews/{reviewId}")

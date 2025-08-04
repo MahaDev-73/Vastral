@@ -13,7 +13,7 @@ public interface UserService  extends UserDetailsService{
 
 	UserResponse<String> save(User users);
 	
-	User loadUserByUsername(String email);
+//	User loadUserByUsername(String email);
 
 	User findUserProfileByJwt(String jwt);
 

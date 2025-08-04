@@ -1,22 +1,30 @@
 package com.sunbeam.controllers;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sunbeam.entities.Product;
 import com.sunbeam.entities.Seller;
-import com.sunbeam.exceptions.CategoryNotFoundException;
 import com.sunbeam.exceptions.ProductException;
 import com.sunbeam.exceptions.SellerException;
-import com.sunbeam.exceptions.UserException;
 import com.sunbeam.request.CreateProductRequest;
 import com.sunbeam.services.ProductService;
 import com.sunbeam.services.SellerService;
 import com.sunbeam.services.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.sunbeam.services.UserService1;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/sellers/product")
@@ -25,12 +33,12 @@ public class SellerProductController {
 
     private final ProductService productService;
     private final SellerService sellerService;
-    private final UserService userService;
+    private final UserService1 userService;
 
 
-    @GetMapping()
+    @GetMapping() //return all the product of seller
     public ResponseEntity<List<Product>> getProductBySellerId(
-            @RequestHeader("Authorization") String jwt) throws ProductException, SellerException {
+            @RequestHeader("Authorization") String jwt) throws Exception {
 
         Seller seller=sellerService.getSellerProfile(jwt);
 
@@ -43,9 +51,7 @@ public class SellerProductController {
     public ResponseEntity<Product> createProduct(
             @RequestBody CreateProductRequest request,
 
-            @RequestHeader("Authorization")String jwt)
-            throws UserException,
-            ProductException, CategoryNotFoundException, SellerException {
+            @RequestHeader("Authorization")String jwt)throws Exception {
 
         Seller seller=sellerService.getSellerProfile(jwt);
 
@@ -64,8 +70,9 @@ public class SellerProductController {
         }
     }
 
-    @PatchMapping("/{productId}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody Product product) {
+    @PutMapping("/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, 
+    											 @RequestBody Product product) {
         try {
             Product updatedProduct = productService.updateProduct(productId, product);
             return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
@@ -74,15 +81,5 @@ public class SellerProductController {
         }
     }
 
-    @PatchMapping("/{productId}/stock")
-    public ResponseEntity<Product> updateProductStock(@PathVariable Long productId) {
-        try {
-            Product updatedProduct = productService.updateProductStock(productId);
-            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-        } catch (ProductException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-
 }
+

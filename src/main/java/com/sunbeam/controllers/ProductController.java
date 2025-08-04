@@ -21,7 +21,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    private final UserService userService;
+    private final UserService1 userService;
 
     private final SellerService sellerService;
 
@@ -52,7 +52,7 @@ public class ProductController {
                                                         @RequestParam(required = false) String sort,
                                                         @RequestParam(required = false) String stock,
                                                         @RequestParam(defaultValue = "0") Integer pageNumber) {
-        System.out.println("color p -------- "+pageNumber);
+        
         return new ResponseEntity<>(
                 productService.getAllProduct(category,brand,
                         color, size, minPrice,

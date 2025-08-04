@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.daos.AddressRepository;
@@ -18,8 +17,8 @@ import com.sunbeam.daos.UserRepository;
 import com.sunbeam.entities.Address;
 import com.sunbeam.entities.Cart;
 import com.sunbeam.entities.CartItem;
+import com.sunbeam.entities.Order;
 import com.sunbeam.entities.OrderItem;
-import com.sunbeam.entities.Orders;
 import com.sunbeam.entities.User;
 import com.sunbeam.exceptions.OrderException;
 import com.sunbeam.models.OrderStatus;
@@ -28,58 +27,63 @@ import com.sunbeam.services.CartService;
 import com.sunbeam.services.OrderItemService;
 import com.sunbeam.services.OrderService;
 
-@Service
-public class OrderServiceImpl implements OrderService {
-	@Autowired
-	private OrderRepository orderRepository;
+import lombok.RequiredArgsConstructor;
 
-	@Autowired
-	private CartService cartService;
-	@Autowired
-	private AddressRepository addressRepository;
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private OrderItemService orderItemService;
-	@Autowired
-	private OrderItemRepository orderItemRepository;
+@Service
+@RequiredArgsConstructor
+public class OrderServiceImpl implements OrderService{
+
+	private final OrderRepository orderRepository;
+	private final CartService cartService;
+	private final AddressRepository addressRepository;
+	private final UserRepository userRepository;
+	private final OrderItemService orderItemService;
+	private final OrderItemRepository orderItemRepository;
+	
+
 
 	@Override
-	public Set<Orders> createOrder(User user, Address shippingAdress, Cart cart) {
-		if (!user.getAddresses().contains(shippingAdress)) {
-			user.getAddresses().add(shippingAdress);
+	public Set<Order> createOrder(User user, Address shippAddress, Cart cart) {
+		
+//		shippAddress.setUser(user);
+		if(!user.getAddresses().contains(shippAddress)){
+			user.getAddresses().add(shippAddress);
 		}
-		Address address = addressRepository.save(shippingAdress);
+
+		Address address= addressRepository.save(shippAddress);
+
 		Map<Long, List<CartItem>> itemsBySeller = cart.getCartItems().stream()
 				.collect(Collectors.groupingBy(item -> item.getProduct().getSeller().getId()));
 
-		Set<Orders> orders = new HashSet<>();
+		Set<Order> orders=new HashSet<>();
 
-		for (Map.Entry<Long, List<CartItem>> entry : itemsBySeller.entrySet()) {
-			Long sellerId = entry.getKey();
-			List<CartItem> items = entry.getValue();
+		for(Map.Entry<Long, List<CartItem>> entry:itemsBySeller.entrySet()){
+			Long sellerId=entry.getKey();
+			List<CartItem> cartItems=entry.getValue();
 
-			int totalOrderPrice = items.stream().mapToInt(CartItem::getSellingPrice).sum();
+			int totalOrderPrice = cartItems.stream()
+					.mapToInt(CartItem::getSellingPrice).sum();
+			int totalItem=cartItems.stream().mapToInt(CartItem::getQuantity).sum();
 
-			int totalItem = items.stream().mapToInt(CartItem::getQuantity).sum();
-
-			Orders createdOrder = new Orders();
+			Order createdOrder=new Order();
 			createdOrder.setUser(user);
 			createdOrder.setSellerId(sellerId);
 			createdOrder.setTotalMrpPrice(totalOrderPrice);
 			createdOrder.setTotalSellingPrice(totalOrderPrice);
 			createdOrder.setTotalItem(totalItem);
-			createdOrder.setShipingAddress(address);
-			createdOrder.setOrderStatus(com.sunbeam.models.OrderStatus.PENDING);
+			createdOrder.setShippingAddress(address);
+			createdOrder.setOrderStatus(OrderStatus.PENDING);
 			createdOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
 
-			Orders savedOrder = orderRepository.save(createdOrder);
+			Order savedOrder=orderRepository.save(createdOrder);
 			orders.add(savedOrder);
 
-			List<OrderItem> orderItems = new ArrayList<>();
 
-			for (CartItem item : items) {
-				OrderItem orderItem = new OrderItem();
+			List<OrderItem> orderItems=new ArrayList<>();
+
+			for(CartItem item: cartItems) {
+				OrderItem orderItem=new OrderItem();
+
 				orderItem.setOrder(savedOrder);
 				orderItem.setMrpPrice(item.getMrpPrice());
 				orderItem.setProduct(item.getProduct());
@@ -88,60 +92,65 @@ public class OrderServiceImpl implements OrderService {
 				orderItem.setUserId(item.getUserId());
 				orderItem.setSellingPrice(item.getSellingPrice());
 
-				savedOrder.getOrderitems().add(orderItem);
-				OrderItem saveOrderItem = orderItemRepository.save(orderItem);
-				orderItems.add(saveOrderItem);
+				savedOrder.getOrderItems().add(orderItem);
+
+				OrderItem createdOrderItem=orderItemRepository.save(orderItem);
+
+				orderItems.add(createdOrderItem);
 			}
+
 		}
+		
 		return orders;
+		
 	}
 
 	@Override
-	public Orders findOrderById(Long orderId) throws OrderException {
-		Optional<Orders> opt = orderRepository.findById(orderId);
-
-		if (opt.isPresent()) {
+	public Order findOrderById(Long id) throws OrderException {
+		Optional<Order> opt=orderRepository.findById(id);
+		
+		if(opt.isPresent()) {
 			return opt.get();
 		}
-		throw new OrderException("order not exist with id " + orderId);
+		throw new OrderException("order not exist with id "+id);
 	}
 
+	
 	@Override
-	public List<Orders> usersOrderHistory(Long userId) {
-
+	public List<Order> usersOrderHistory(Long userId) {
 		return orderRepository.findByUserId(userId);
 	}
 
-	@Override
-	public List<Orders> getShopsOrders(Long sellerId) {
-
-		return orderRepository.findBySellerIdOrderByOrderDateDesc(sellerId);
-	}
 
 	@Override
-	public Orders updateOrderStatus(Long orderId, OrderStatus orderStatus) throws OrderException {
-		Orders order = findOrderById(orderId);
+	public Order updateOrderStatus(Long orderId, OrderStatus orderStatus)
+			throws Exception {
+		Order order=findOrderById(orderId);
 		order.setOrderStatus(orderStatus);
 		return orderRepository.save(order);
 	}
 
 	@Override
-	public void deleteOrder(Long orderId) throws OrderException {
-		Orders order = findOrderById(orderId);
-
-		orderRepository.deleteById(orderId);
-
-	}
-
-	@Override
-	public Orders cancelOrder(Long orderId, User user) throws OrderException {
-		Orders order = this.findOrderById(orderId);
-		if (user.getId() != order.getUser().getId()) {
-			throw new OrderException("you can't perform this action " + orderId);
+	public Order cancelOrder(Long orderId, User user) throws Exception {
+		Order order=this.findOrderById(orderId);
+		if(user.getId()!=order.getUser().getId()){
+			throw new OrderException("you can't perform this action "+orderId);
 		}
 		order.setOrderStatus(OrderStatus.CANCELLED);
 
 		return orderRepository.save(order);
 	}
 
+	@Override
+	public List<Order> sellersOrder(Long sellerId) {
+		return orderRepository.findBySellerId(sellerId);
+	}
+
+	@Override
+	public OrderItem getOrderItemById(Long id) throws Exception {
+		return orderItemRepository.findById(id).orElseThrow(()->
+		new Exception("OrderItem not exists"));
+	}
+
 }
+

@@ -3,12 +3,9 @@ package com.sunbeam.controllers;
 import com.sunbeam.entities.Product;
 import com.sunbeam.entities.User;
 import com.sunbeam.entities.Wishlist;
-import com.sunbeam.exceptions.ProductException;
-import com.sunbeam.exceptions.UserException;
-import com.sunbeam.exceptions.WishlistNotFoundException;
 import com.sunbeam.response.ApiResponse;
 import com.sunbeam.services.ProductService;
-import com.sunbeam.services.UserService;
+import com.sunbeam.services.UserService1;
 import com.sunbeam.services.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,7 @@ public class WishlistController {
 
     private final WishlistService wishlistService;
     private final ProductService productService;
-    private final UserService userService;
+    private final UserService1 userService;
 
 
     @PostMapping("/create")
@@ -33,7 +30,7 @@ public class WishlistController {
 
     @GetMapping()
     public ResponseEntity<Wishlist> getWishlistByUserId(
-            @RequestHeader("Authorization") String jwt) throws UserException {
+            @RequestHeader("Authorization") String jwt) throws Exception {
 
         User user = userService.findUserProfileByJwt(jwt);
         Wishlist wishlist = wishlistService.getWishlistByUserId(user);
@@ -43,7 +40,7 @@ public class WishlistController {
     @PostMapping("/add-product/{productId}")
     public ResponseEntity<Wishlist> addProductToWishlist(
             @PathVariable Long productId,
-            @RequestHeader("Authorization") String jwt) throws WishlistNotFoundException, ProductException, UserException {
+            @RequestHeader("Authorization") String jwt) throws Exception {
 
         Product product = productService.findProductById(productId);
         User user=userService.findUserProfileByJwt(jwt);

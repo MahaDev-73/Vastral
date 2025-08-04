@@ -1,31 +1,40 @@
 package com.sunbeam.controllers;
 
-// import com.razorpay.RazorpayException;
-// import com.stripe.exception.StripeException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.sunbeam.daos.CartItemRepository;
 import com.sunbeam.daos.CartRepository;
-import com.sunbeam.entities.*;
-import com.sunbeam.exceptions.UserException;
+import com.sunbeam.entities.Cart;
+import com.sunbeam.entities.Order;
+import com.sunbeam.entities.PaymentOrder;
+import com.sunbeam.entities.Seller;
+import com.sunbeam.entities.SellerReport;
+import com.sunbeam.entities.User;
 import com.sunbeam.models.PaymentMethod;
 import com.sunbeam.response.ApiResponse;
 import com.sunbeam.response.PaymentLinkResponse;
-import com.sunbeam.services.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.sunbeam.services.PaymentService;
+import com.sunbeam.services.SellerReportService;
+import com.sunbeam.services.SellerService;
+import com.sunbeam.services.TransactionService;
+import com.sunbeam.services.UserService1;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/payment")
 public class PaymentController {
 
-    private final UserService userService;
+    private final UserService1 userService;
     private final PaymentService paymentService;
     private final TransactionService transactionService;
     private final SellerReportService sellerReportService;
@@ -61,7 +70,7 @@ public class PaymentController {
     }
 
 
-    @GetMapping("/api/payment/{paymentId}")
+    @GetMapping("/{paymentId}")
     public ResponseEntity<ApiResponse> paymentSuccessHandler(
             @PathVariable String paymentId,
             @RequestParam String paymentLinkId,
@@ -80,17 +89,17 @@ public class PaymentController {
                 paymentLinkId
         );
         if(paymentSuccess){
-            for(Orders order:paymentOrder.getOrders()){
+            for(Order order:paymentOrder.getOrders()){
                 transactionService.createTransaction(order);
                 Seller seller=sellerService.getSellerById(order.getSellerId());
                 SellerReport report=sellerReportService.getSellerReport(seller);
                 report.setTotalOrders(report.getTotalOrders()+1);
                 report.setTotalEarnings(report.getTotalEarnings()+order.getTotalSellingPrice());
-                report.setTotalSales(report.getTotalSales()+order.getOrderitems().size());
+                report.setTotalSales(report.getTotalSales()+order.getOrderItems().size());
                 sellerReportService.updateSellerReport(report);
             }
             Cart cart=cartRepository.findByUserId(user.getId());
-            cart.setCouponPrice(0);
+//            cart.setCouponPrice(0);
             cart.setCouponCode(null);
 //        Set<CartItem> items=cart.getCartItems();
 //        cartItemRepository.deleteAll(items);
@@ -101,8 +110,8 @@ public class PaymentController {
       
         ApiResponse res = new ApiResponse();
         res.setMessage("Payment successful");
-        res.setStatus(true);
 
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 }
+

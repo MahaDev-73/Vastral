@@ -1,17 +1,9 @@
 package com.sunbeam.services.impl;
 
-// import com.sunbeam.daos.CategoryRepository;
-import com.sunbeam.daos.ProductRepository;
-import com.sunbeam.entities.Category;
-import com.sunbeam.entities.Product;
-import com.sunbeam.entities.Seller;
-import com.sunbeam.exceptions.ProductException;
-import com.sunbeam.request.CreateProductRequest;
-import com.sunbeam.services.ProductService;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +11,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import com.sunbeam.daos.CategoryRepository;
+import com.sunbeam.daos.ProductRepository;
+import com.sunbeam.entities.Category;
+import com.sunbeam.entities.Product;
+import com.sunbeam.entities.Seller;
+import com.sunbeam.exceptions.ProductException;
+import com.sunbeam.request.CreateProductRequest;
+import com.sunbeam.services.ProductService;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import lombok.RequiredArgsConstructor;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,56 +32,52 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     
-    // private final CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
 
     @Override
-    public Product createProduct(CreateProductRequest req,
-
-                                 Seller seller
-                                 ) throws ProductException {
-
-
+    public Product createProduct(CreateProductRequest req, Seller seller) throws ProductException {
+ 
         int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
 
-        // Category category1=categoryRepository.findByCategoryId(req.getCategory());
-        // if(category1==null){
-        //     Category category=new Category();
-        //     category.setCategoryId(req.getCategory());
-        //     category.setLevel(1);
-        //     category.setName(req.getCategory().replace("_"," "));
-        //     category1=categoryRepository.save(category);
-        // }
+        Category category1=categoryRepository.findByCategoryId(req.getCategory());
+        if(category1==null){
+            Category category=new Category();
+            category.setCategoryId(req.getCategory());
+            category.setLevel(1);
+            category.setName(req.getCategory().replace("_"," "));
+            category1=categoryRepository.save(category);
+        }
 
-        // Category category2=categoryRepository.findByCategoryId(req.getCategory2());
-        // if(category2==null){
-        //     Category category=new Category();
-        //     category.setCategoryId(req.getCategory2());
-        //     category.setLevel(2);
-        //     category.setParentCategory(category1);
-        //     category.setName(req.getCategory2().replace("_"," "));
-        //     category2=categoryRepository.save(category);
-        // }
-        // Category category3=categoryRepository.findByCategoryId(req.getCategory3());
-        // if(category3==null){
-        //     Category category=new Category();
-        //     category.setCategoryId(req.getCategory3());
-        //     category.setLevel(3);
-        //     category.setParentCategory(category2);
-        //     category.setName(req.getCategory3().replace("_"," "));
-        //     category3=categoryRepository.save(category);
-        // }
+        Category category2=categoryRepository.findByCategoryId(req.getCategory2());
+        if(category2==null){
+            Category category=new Category();
+            category.setCategoryId(req.getCategory2());
+            category.setLevel(2);
+            category.setParentCategory(category1);
+            category.setName(req.getCategory2().replace("_"," "));
+            category2=categoryRepository.save(category);
+        }
+        Category category3=categoryRepository.findByCategoryId(req.getCategory3());
+        if(category3==null){
+            Category category=new Category();
+            category.setCategoryId(req.getCategory3());
+            category.setLevel(3);
+            category.setParentCategory(category2);
+            category.setName(req.getCategory3().replace("_"," "));
+            category3=categoryRepository.save(category);
+        }
         
         Product product=new Product();
 
         product.setSeller(seller);
-        // product.setCategory(category3);
+        product.setCategory(category3);
         product.setTitle(req.getTitle());
         product.setColor(req.getColor());
         product.setDescription(req.getDescription());
-        // product.setDiscountPercent(discountPercentage);
+        product.setDiscountpercent(discountPercentage);
         product.setSellingPrice(req.getSellingPrice());
-        // product.setImages(req.getImages());
+        product.setImage(req.getImages());
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
         product.setCreatedAt(LocalDateTime.now());
@@ -112,16 +110,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProductStock(Long productId) throws ProductException {
-        Product product = this.findProductById(productId);
-        // product.setIn_stock(!product.isIn_stock());
-        return productRepository.save(product);
-    }
-
-    @Override
     public Product findProductById(Long id) throws ProductException {
         return productRepository.findById(id)
-                .orElseThrow(()-> new ProductException("product not found"));
+                .orElseThrow(()-> new ProductException("product not found with id " + id));
     }
 
     @Override
@@ -188,7 +179,8 @@ public class ProductServiceImpl implements ProductService {
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
+        };  //Filtering Feature
+        
         Pageable pageable;
         if (sort != null && !sort.isEmpty()) {
             pageable = switch (sort) {
@@ -200,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
             };
         } else {
             pageable = PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.unsorted());
-        }
+        } //Sorting Feature
 
 
         return productRepository.findAll(spec, pageable);

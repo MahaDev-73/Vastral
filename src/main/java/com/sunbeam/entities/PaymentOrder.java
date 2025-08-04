@@ -39,13 +39,13 @@ public class PaymentOrder {
 	
 	private PaymentMethod paymentMethod;
 	
-	private String paymentLinkedId;
+	private String paymentLinkId;
 	
 	@ManyToOne
 	private User user;
 	
 	@OneToMany
-	private Set<Orders> orders = new HashSet<>();
+	private Set<Order> orders = new HashSet<>();
 	
 	
 	

@@ -1,15 +1,16 @@
 package com.sunbeam.services.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.sunbeam.daos.DealRepository;
 import com.sunbeam.daos.HomeCategoryRepository;
 import com.sunbeam.entities.Deal;
-import com.sunbeam.entities.Home;
 import com.sunbeam.entities.HomeCategory;
 import com.sunbeam.services.DealService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,13 @@ public class DealServiceImpl implements DealService {
     private final DealRepository dealRepository;
     private final HomeCategoryRepository homeCategoryRepository;
 
+
+    @Override
+    public List<Deal> getDeals() {
+        return dealRepository.findAll();
+    }
+    
+    
     @Override
     public Deal createDeal(Deal deal) {
         HomeCategory category = homeCategoryRepository
@@ -26,21 +34,7 @@ public class DealServiceImpl implements DealService {
         newDeal.setDiscount(deal.getDiscount());
         return dealRepository.save(newDeal);
     }
-//
-//    @Override
-//    public List<Deal> createDeals(List<Deal> deals) {
-//        if(dealRepository.findAll().isEmpty()){
-//            return dealRepository.saveAll(deals);
-//        }
-//        else return dealRepository.findAll();
-//
-//    }
 
-
-    @Override
-    public List<Deal> getDeals() {
-        return dealRepository.findAll();
-    }
 
     @Override
     public Deal updateDeal(Deal deal,Long id) throws Exception {
@@ -61,10 +55,8 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public void deleteDeal(Long id) throws Exception {
-        Deal deal = dealRepository.findById(id).orElse(null);
-
+        Deal deal = dealRepository.findById(id).orElseThrow(()->new Exception("Deal Not Found"));
         if (deal != null) {
-
             dealRepository.delete(deal);
         }
 
@@ -72,3 +64,4 @@ public class DealServiceImpl implements DealService {
 
 
 }
+

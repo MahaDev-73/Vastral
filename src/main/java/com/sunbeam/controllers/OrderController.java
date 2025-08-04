@@ -15,18 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.razorpay.PaymentLink;
 import com.sunbeam.daos.PaymentOrderRepository;
 import com.sunbeam.entities.Address;
 import com.sunbeam.entities.Cart;
+import com.sunbeam.entities.Order;
 import com.sunbeam.entities.OrderItem;
-import com.sunbeam.entities.Orders;
 import com.sunbeam.entities.PaymentOrder;
 import com.sunbeam.entities.Seller;
 import com.sunbeam.entities.SellerReport;
 import com.sunbeam.entities.User;
-import com.sunbeam.exceptions.OrderException;
-import com.sunbeam.exceptions.SellerException;
-import com.sunbeam.exceptions.UserException;
 import com.sunbeam.models.PaymentMethod;
 import com.sunbeam.response.PaymentLinkResponse;
 import com.sunbeam.services.CartService;
@@ -35,7 +33,7 @@ import com.sunbeam.services.OrderService;
 import com.sunbeam.services.PaymentService;
 import com.sunbeam.services.SellerReportService;
 import com.sunbeam.services.SellerService;
-import com.sunbeam.services.UserService;
+import com.sunbeam.services.UserService1;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,7 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderController {
 	
 	private final OrderService orderService;
-	private final UserService userService;
+	private final UserService1 userService;
 	private final OrderItemService orderItemService;
 	private final CartService cartService;
 	private final PaymentService paymentService;
@@ -54,60 +52,56 @@ public class OrderController {
 	private final SellerService sellerService;
 
 	
-//	@PostMapping()
-//	public ResponseEntity<PaymentLinkResponse> createOrderHandler(
-//			@RequestBody Address spippingAddress,
-//			@RequestParam PaymentMethod paymentMethod,
-//			@RequestHeader("Authorization")String jwt)
-//            throws UserException {
-//		
-//		User user=userService.findUserProfileByJwt(jwt);
-//		Cart cart=cartService.findUserCart(user);
-//		Set<Orders> orders =orderService.createOrder(user, spippingAddress,cart);
-//
-//		PaymentOrder paymentOrder=paymentService.createOrder(user,orders);
-//
-//		PaymentLinkResponse res = new PaymentLinkResponse();
-//
-//		if(paymentMethod.equals(PaymentMethod.RAZORPAY)){
-//			PaymentLink payment=paymentService.createRazorpayPaymentLink(user,
-//					paymentOrder.getAmount(),
-//					paymentOrder.getId());
-//			String paymentUrl=payment.get("short_url");
-//			String paymentUrlId=payment.get("id");
-//
-//
-//			res.setPayment_link_url(paymentUrl);
-////			res.setPayment_link_id(paymentUrlId);
-//			paymentOrder.setPaymentLinkedId(paymentUrlId);
-//			paymentOrderRepository.save(paymentOrder);
-//		}
-//		else{
-//			String paymentUrl=paymentService.createStripePaymentLink(user,
-//					paymentOrder.getAmount(),
-//					paymentOrder.getId());
-//			res.setPayment_link_url(paymentUrl);
-//		}
-//		return new ResponseEntity<>(res,HttpStatus.OK);
-//
-//	}
+	@PostMapping()
+	public ResponseEntity<?> createOrderHandler( // Use '?' for wildcard if return types differ
+	        @RequestBody Address spippingAddress,
+	        @RequestParam PaymentMethod paymentMethod,
+	        @RequestHeader("Authorization") String jwt)
+	        throws Exception {
+
+	    User user = userService.findUserProfileByJwt(jwt);
+	    Cart cart = cartService.findUserCart(user);
+	    Set<Order> orders = orderService.createOrder(user, spippingAddress, cart);
+	    PaymentOrder paymentOrder = paymentService.createOrder(user, orders);
+
+	    if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
+	        PaymentLinkResponse res = new PaymentLinkResponse();
+
+	        PaymentLink payment = paymentService.createRazorpayPaymentLink(user,
+	                paymentOrder.getAmount(),
+	                paymentOrder.getId());
+	        String paymentUrl = payment.get("short_url");
+	        String paymentUrlId = payment.get("id");
+
+	        res.setPayment_link_url(paymentUrl);
+	        paymentOrder.setPaymentLinkId(paymentUrlId);
+	        paymentOrderRepository.save(paymentOrder);
+
+	        return new ResponseEntity<>(res, HttpStatus.OK);
+
+	    } else {
+	        // If it's not Razorpay, return a "Bad Request" error to the client.
+	        return new ResponseEntity<>("Payment method not supported. Please use RAZORPAY.", 
+	                                    HttpStatus.BAD_REQUEST);
+	    }
+	}
 	
 	@GetMapping("/user")
-	public ResponseEntity< List<Orders>> usersOrderHistoryHandler(
+	public ResponseEntity< List<Order>> usersOrderHistoryHandler(
 			@RequestHeader("Authorization")
-	String jwt) throws UserException{
+	String jwt) throws Exception{
 		
 		User user=userService.findUserProfileByJwt(jwt);
-		List<Orders> orders=orderService.usersOrderHistory(user.getId());
+		List<Order> orders=orderService.usersOrderHistory(user.getId());
 		return new ResponseEntity<>(orders,HttpStatus.ACCEPTED);
 	}
 	
 	@GetMapping("/{orderId}")
-	public ResponseEntity< Orders> getOrderById(@PathVariable Long orderId, @RequestHeader("Authorization")
-	String jwt) throws OrderException, UserException{
+	public ResponseEntity< Order> getOrderById(@PathVariable Long orderId, @RequestHeader("Authorization")
+	String jwt) throws Exception{
 		
 		User user = userService.findUserProfileByJwt(jwt);
-		Orders orders=orderService.findOrderById(orderId);
+		Order orders=orderService.findOrderById(orderId);
 		return new ResponseEntity<>(orders,HttpStatus.ACCEPTED);
 	}
 
@@ -122,12 +116,12 @@ public class OrderController {
 	}
 
 	@PutMapping("/{orderId}/cancel")
-	public ResponseEntity<Orders> cancelOrder(
+	public ResponseEntity<Order> cancelOrder(
 			@PathVariable Long orderId,
 			@RequestHeader("Authorization") String jwt
-	) throws UserException, OrderException, SellerException {
+	) throws Exception {
 		User user=userService.findUserProfileByJwt(jwt);
-		Orders order=orderService.cancelOrder(orderId,user);
+		Order order=orderService.cancelOrder(orderId,user);
 
 		Seller seller= sellerService.getSellerById(order.getSellerId());
 		SellerReport report=sellerReportService.getSellerReport(seller);
@@ -140,3 +134,4 @@ public class OrderController {
 	}
 
 }
+

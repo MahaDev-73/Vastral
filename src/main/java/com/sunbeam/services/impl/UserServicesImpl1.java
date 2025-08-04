@@ -12,32 +12,28 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServicesImpl1 implements UserService1{
+public class UserServicesImpl1 implements UserService1 {
 
 	private final UserRepository userRepository;
 	private final JwtProvider jwtProvider;
-	
-	
-	@Override
-	public User findUserByJwtToken(String jwt) throws Exception {
-		String email = jwtProvider.getEmailFromJwtToken(jwt);	
-		return  this.findUserByEmail(email);
-	}
 
 	@Override
 	public User findUserByEmail(String email) throws Exception {
 		User user = userRepository.findByEmail(email);
-		if(user == null) {
-			throw new Exception("User not found with email - "+email);
+		if (user == null) {
+			throw new Exception("User not found with email - " + email);
 		}
-		return user; 
+		return user;
 	}
 
 	@Override
-	public User findUserProfileByJwt(String jwt) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public User findUserProfileByJwt(String token) throws Exception {
+	    String email = jwtProvider.getEmailFromJwtToken(token);
+	    User user = userRepository.findByEmail(email);
+	    if (user == null) {
+	        throw new Exception("User not found with email - " + email);
+	    }
+	    return user;
 	}
-
 
 }

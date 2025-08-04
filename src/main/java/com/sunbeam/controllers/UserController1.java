@@ -25,7 +25,7 @@ public class UserController1 {
 			@RequestHeader("Authorization") String jwt
 			) throws Exception { 
 		
-		User user = userService.findUserByJwtToken(jwt);
+		User user = userService.findUserByEmail(jwt);
 		
 		return ResponseEntity.ok(user);
 	}

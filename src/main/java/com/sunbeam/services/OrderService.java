@@ -8,23 +8,23 @@ import com.sunbeam.entities.Cart;
 import com.sunbeam.entities.User;
 import com.sunbeam.exceptions.OrderException;
 import com.sunbeam.models.OrderStatus;
-import com.sunbeam.entities.Orders;
+import com.sunbeam.entities.Order;
+import com.sunbeam.entities.OrderItem;
 
 public interface OrderService {
-public Set<Orders> createOrder(User user, Address shippingAddress, Cart cart);
-	
-	public Orders findOrderById(Long orderId) throws OrderException;
-	
-	public List<Orders> usersOrderHistory(Long userId);
-	
-	public List<Orders>getShopsOrders(Long sellerId);
 
-	public Orders updateOrderStatus(Long orderId,
-								   OrderStatus orderStatus)
-			throws OrderException;
-	
-	public void deleteOrder(Long orderId) throws OrderException;
+    Set<Order> createOrder(User user, Address shippingAddress, Cart cart);
+    
+    Order findOrderById(Long id) throws OrderException;
 
-	Orders cancelOrder(Long orderId,User user) throws OrderException;
+    List<Order> usersOrderHistory(Long userId);
+
+    List<Order> sellersOrder(Long sellerId);
+
+    Order updateOrderStatus(Long orderId, OrderStatus orderStatus) throws Exception;
+    
+    Order cancelOrder(Long orderId, User user) throws Exception;
+
+	OrderItem getOrderItemById(Long id) throws Exception;
 	
 }

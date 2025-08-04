@@ -5,9 +5,8 @@ import java.util.List;
 import com.sunbeam.entities.HomeCategory;
 
 public interface HomeCategoryService {
-	 HomeCategory createCategory(HomeCategory categories);
-	    List<HomeCategory> createCategories(List<HomeCategory> categories);
-	    List<HomeCategory> getAllCategories();
-	    HomeCategory updateCategory(HomeCategory categories,Long id) throws Exception;
-
+	 HomeCategory createHomeCategory(HomeCategory homeCategory);	   
+	 List<HomeCategory> createCategories(List<HomeCategory> homeCategories);
+	 HomeCategory updateHomeCategory(HomeCategory homeCategory,Long id) throws Exception;
+	 List<HomeCategory> getAllHomeCategories();
 }

@@ -14,6 +14,7 @@ import com.sunbeam.models.HomeCategorySection;
 import com.sunbeam.services.HomeService;
 
 import lombok.RequiredArgsConstructor;
+
 @RequiredArgsConstructor
 @Service
 public class HomeServiceImpl implements HomeService {

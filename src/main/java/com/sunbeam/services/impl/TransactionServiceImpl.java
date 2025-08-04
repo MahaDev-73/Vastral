@@ -1,35 +1,28 @@
 package com.sunbeam.services.impl;
 
+import java.util.List;
 
-import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.daos.SellerRepository;
 import com.sunbeam.daos.TransactionRepository;
-import com.sunbeam.entities.Orders;
+import com.sunbeam.entities.Order;
 import com.sunbeam.entities.Seller;
 import com.sunbeam.entities.Transaction;
 import com.sunbeam.services.TransactionService;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final SellerRepository sellerRepository;
 
-    @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository,
-                                  SellerRepository sellerRepository
-    ) {
-        this.transactionRepository = transactionRepository;
-        this.sellerRepository = sellerRepository;
-    }
-
     @Override
-    public Transaction createTransaction(Orders order) {
+    public Transaction createTransaction(Order order) {
         Seller seller = sellerRepository.findById(order.getSellerId()).get();
         Transaction transaction = new Transaction();
         transaction.setCustomer(order.getUser());
@@ -48,10 +41,6 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAll();
     }
 
-	@Override
-	public Transaction createTransaction(Order order) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }

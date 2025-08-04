@@ -1,17 +1,14 @@
 package com.sunbeam.daos;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import com.sunbeam.entities.Orders;
+import com.sunbeam.entities.Order;
 
-@Repository
-public interface OrderRepository extends JpaRepository<Orders, Long> {
-	  List<Orders>findByUserId(Long userId);
-	    List<Orders> findBySellerIdOrderByOrderDateDesc(Long sellerId);
-	    List<Orders> findBySellerIdAndOrderDateBetween(Long sellerId,LocalDateTime startDate, LocalDateTime endDate);
+public interface OrderRepository extends JpaRepository<Order, Long>{
 
-	}
+	List<Order> findByUserId(Long userId);
+	
+	List<Order> findBySellerId(Long sellerId);
+}
